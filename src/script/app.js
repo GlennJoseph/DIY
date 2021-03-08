@@ -1,7 +1,16 @@
 var settings = {
     url: "../php/actions.php",
     type:"POST",
-    data: JSON.stringify({action: 'get_Template'})
+    data: JSON.stringify({
+        action: 'sign_Up',
+        accountName: 'glennjosephdl@gmail.com',
+        templateID: 1000440,
+        permissions: [
+            "STATS_TAB",
+            "EDIT",
+            "DEV_MODE"
+        ]
+    })
 };
 
 let templates = doAjax(settings);

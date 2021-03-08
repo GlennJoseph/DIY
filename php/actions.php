@@ -12,11 +12,12 @@ switch($data->action){
         break;
     case 'sign_Up':
         // first name, last name, email address
-        // !ASSIGNMENT Create Account
-        // !ASSIGNMENT Create Site 
-        // !ASSIGNMENT Grant Access
-        // Generate SSO (Enterprise only)
-        // !ASSIGNMENT Reset Password
+        createAccount($ACCOUNT_NAME);
+        //getAccount($ACCOUNT_NAME);
+        // $SITE_NAME = createSite($data->templateID);
+        // grantSiteAccess($data->accountName, $SITE_NAME, $data->permissions);
+        // $RESET_PASSWORD_LINK = getResetPasswordLink($data->accountName);
+        // print_r($RESET_PASSWORD_LINK);
         break;
     default:
         echo 'default';
