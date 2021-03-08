@@ -7,9 +7,8 @@ $data = json_decode($payload);
 
 switch($data->action){
     case 'get_Template':
-
         $templates = getTemplates();
-        print_r(json_encode($templates));
+        print_r($templates);
         break;
     case 'sign_Up':
         // first name, last name, email address
@@ -20,7 +19,7 @@ switch($data->action){
         // !ASSIGNMENT Reset Password
         break;
     default:
-        //code
+        echo 'default';
         break;
 }
 

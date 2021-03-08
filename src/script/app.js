@@ -1,5 +1,5 @@
 var settings = {
-    url: "..php/actions.php",
+    url: "../php/actions.php",
     type:"POST",
     data: JSON.stringify({action: 'get_Template'})
 };
@@ -7,13 +7,23 @@ var settings = {
 let templates = doAjax(settings);
     templates.then(resp => {
         let data = JSON.parse(resp);
-
-        if(!data.status){
+        if(!data){
             console.error('something went wrong');
         } else {
-            console.log(data.response);
+            console.log(data);
         }
     });
+
+function displayTemplates(data){
+    $('.gridTemplateView').html('');
+    data.map(i => {
+        $('.gridTemplateView').append(`
+            <div class="templateItem">
+                
+            </div>
+        `);
+    })
+}
 
 /**
  * @param settings
