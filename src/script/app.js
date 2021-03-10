@@ -2,24 +2,37 @@ var settings = {
     url: "../php/actions.php",
     type:"POST",
     data: JSON.stringify({
-        action: 'sign_Up',
-        accountName: 'glennjosephdl@gmail.com',
-        templateID: 1000440,
+        action: "sign_Up",
+        account_name: "glennjosephdl@gmail.com",
+        first_name: "Glenn",
+        last_name: "Deleon",
+        lang: "en",
+        email:"glennjosephdl@gmail.com",
+        account_type: "STAFF",
+        template_id: 1000440,
         permissions: [
             "STATS_TAB",
             "EDIT",
             "DEV_MODE"
-        ]
+        ],
+        site_data:{
+            external_uid: "GLENNSAMPLE",
+            site_seo: {
+                og_image: "https://irp-cdn.multiscreensite.com/38e420a5/dms3rep/multi/46090973_1947701631975735_1914562907203436544_n.jpg",
+                title: "Example Title",
+                description: "Example description. Should be around 155 characters long, but can be upto 320."
+            }
+        }
     })
 };
 
 let templates = doAjax(settings);
     templates.then(resp => {
         let data = JSON.parse(resp);
-        if(!data){
-            console.error('something went wrong');
+        if(data.status){
+            console.log(data.response);
         } else {
-            console.log(data);
+            console.error(data.response);
         }
     });
 
