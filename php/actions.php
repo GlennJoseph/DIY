@@ -4,53 +4,68 @@ require('init.php');
 
 $payload = @file_get_contents('php://input');
 $data = json_decode($payload);
+print_r($payload);
+print_r('asd');
 
 switch($data->action){
 
-    case 'get_Template':
+    case 'get_Templates':
         $templates = getTemplates();
-        print_r($templates);
-        break;
+        printResponse($templates);
+	break;
 
 
     case 'sign_Up':
-	// CREATE ACCOUNT ----------
-	$account = createAccount($data);
-	if(!$account['status']) printResponse($data);
+		// CREATE ACCOUNT ----------
+		$account = createAccount($data);
+		if(!$account['status']) printResponse($account);
 
-	// CREATE SITE ----------
-	$site = createSite($data);
-	if(!$site['status']){
-		deleteAccount($data);
+		// CREATE SITE ----------
+		$site = createSite($data);
+		if(!$site['status']){
+			deleteAccount($data);
+			printResponse($site);
+		}
+		$data->site_name = $site['response']->site_name;
+
+		// // GET SSO LINK ----------
+		$sso_link = getSSOLink($data);
+		if(!$sso_link['status']){
+			deleteAccount($data);
+			deleteSite($data);
+			printResponse($sso_link);
+		}
+		$data->sso_link = $sso_link['response']->url;
+
+		// // GRANT SITE ACCESS ----------
+		$site_access = grantSiteAccess($data);
+		if(!$site_access['status']){
+			deleteAccount($data);
+			deleteSite($data);
+			printResponse($site_access);
+		}
+
+		// // GET RESET PASSWORD LINK ----------
+		$reset_password_link = getResetPasswordLink($data);
+		if(!$reset_password_link['status']){
+			deleteAccount($data);
+			deleteSite($data);
+			printResponse($reset_password_link);
+		}
+		$data->reset_password_link = $reset_password_link['response']->reset_url;
+		
+		// // Use json_encode when printing to app.js
+		
+		// print_r(json_encode(["status"=>true,"response"=>$data,"request"=>'Sign Up']));
+		$data->status = true;
+		$data->request = 'Sign Up';
 		printResponse($data);
-	}
-	$data->site_name = $site['response']->site_name;
-
-	// // GET SSO LINK ----------
-	$sso_link = getSSOLink($data);
-	if(!$sso_link['status']) printResponse($data);
-	$data->sso_link = $sso_link['response']->url;
-
-	// // GRANT SITE ACCESS ----------
-	$site_access = grantSiteAccess($data);
-	if(!$site_access['status']) printResponse($data);
-	$data->site_access = $site_access['response']->url;
-
-	// // GET RESET PASSWORD LINK ----------
-	$reset_password_link = getResetPasswordLink($data);
-	if(!$reset_password_link['status']) printResponse($data);
-	$data->reset_password_link = $reset_password_link['response']->reset_url;
-	
-	// // Use json_encode when printing to app.js
-	
-	// print_r(json_encode(["status"=>true,"response"=>$data,"request"=>'Sign Up']));
-	printResponse($data);
 
 	break;
 
 
     default:
-	echo 'default';
+		print_r($data);
 	break;
 
 }

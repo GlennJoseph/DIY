@@ -1,5 +1,6 @@
 <?php
 
+// GET - TEMPLATES
 function getTemplates(){
 
     $curl = curl_init();
@@ -19,25 +20,22 @@ function getTemplates(){
       ),
     ));
 
-    // CHECK RESPONSE CODE 
+    $resp = curl_exec($curl);
     $responseCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-
-    $response = curl_exec($curl);
-
+  
     curl_close($curl);
-    echo $response; 
     
-    // if($responseCode == 200 || $responseCode == 204){
-    //     return ["status"=>true,"response"=>$response,"request"=>__FUNCTION__];
-    //     // checkpoint
-    //     // uniform
-    // }else{
-    //     return ["status"=>true,"response"=>$response,"request"=>__FUNCTION__];
-    // }
+    $response = json_decode($resp);
+  
+    if($responseCode == 200 || $responseCode == 204){
+        return ["status"=>true,"response"=>$response,"request"=>__FUNCTION__];
+    }else{
+        return ["status"=>false,"response"=>$response->message,"request"=>__FUNCTION__];
+    }
 
 }
 
-
+// POST - CREATE ACCOUNT
 function createAccount($data){
 
   $body_params = ['account_name'=>$data->account_name];
@@ -108,10 +106,42 @@ function createAccount($data){
   
 // }
 
+// DELETE - ACCOUNT
 function deleteAccount($data){
-  // delete account
+
+  $curl = curl_init();
+
+  curl_setopt_array($curl, array(
+    CURLOPT_URL => DUDA_ROUTE.'/accounts/'.$data->account_name,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_ENCODING => '',
+    CURLOPT_MAXREDIRS => 10,
+    CURLOPT_TIMEOUT => 0,
+    CURLOPT_FOLLOWLOCATION => true,
+    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+    CURLOPT_CUSTOMREQUEST => 'DELETE',
+    CURLOPT_HTTPHEADER => array(
+      'Authorization: Basic '.DUDA_API_KEY,
+      'Content-Type: application/json'
+    ),
+  ));
+  
+  $resp = curl_exec($curl);
+  $responseCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+  curl_close($curl);
+  
+  $response = json_decode($resp);
+
+  if($responseCode == 200 || $responseCode == 204){
+      return ["status"=>true,"response"=>$response,"request"=>__FUNCTION__];
+  }else{
+      return ["status"=>false,"response"=>$response->message,"request"=>__FUNCTION__];
+  }
+
 }
 
+// POST - CREATE SITE
 function createSite($data){
 
   $body_params = ['template_id'=>$data->template_id];
@@ -155,7 +185,42 @@ function createSite($data){
 
 }
 
+// DELETE - SITE
+function deleteSite($data){
 
+  $curl = curl_init();
+
+  curl_setopt_array($curl, array(
+    CURLOPT_URL => DUDA_ROUTE.'/sites/multiscreen/'.$data->site_name,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_ENCODING => '',
+    CURLOPT_MAXREDIRS => 10,
+    CURLOPT_TIMEOUT => 0,
+    CURLOPT_FOLLOWLOCATION => true,
+    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+    CURLOPT_CUSTOMREQUEST => 'DELETE',
+    CURLOPT_HTTPHEADER => array(
+      'Authorization: Basic '.DUDA_API_KEY,
+      'Content-Type: application/json',
+    ),
+  ));
+  
+  $resp = curl_exec($curl);
+  $responseCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+  curl_close($curl);
+  
+  $response = json_decode($resp);
+
+  if($responseCode == 200 || $responseCode == 204){
+      return ["status"=>true,"response"=>$response,"request"=>__FUNCTION__];
+  }else{
+      return ["status"=>false,"response"=>$response->message,"request"=>__FUNCTION__];
+  }
+
+}
+
+// GET - SSO LINK
 function getSSOLink($data){
     $curl = curl_init();
 
@@ -188,7 +253,7 @@ function getSSOLink($data){
     }
 }
 
-
+// POST - GRANT SITE ACCESS
 function grantSiteAccess($data){
 
     // add predefined permissions
@@ -199,7 +264,7 @@ function grantSiteAccess($data){
   $curl = curl_init();
 
   curl_setopt_array($curl, array(
-      CURLOPT_URL => DUDA_ROUTE.'/accounts/'.$data->account_name.'/sites/'.$data->response['site_name'].'/permissions',
+      CURLOPT_URL => DUDA_ROUTE.'/accounts/'.$data->account_name.'/sites/'.$data->site_name.'/permissions',
       CURLOPT_RETURNTRANSFER => true,
       CURLOPT_ENCODING => '',
       CURLOPT_MAXREDIRS => 10,
@@ -229,7 +294,7 @@ function grantSiteAccess($data){
 
 }
 
-
+// GET - RESET PASSWORD LINK
 function getResetPasswordLink($data){
 
   $curl = curl_init();
