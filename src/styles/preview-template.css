@@ -1,0 +1,96 @@
+.gridTemplateView {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    flex-wrap: wrap;    
+    font-family: 'Poppins';
+    font-size: 14px;
+}
+
+.templateItem {
+    display: block;
+    width: 31%;
+    margin: 1%;
+    transition: all .5s ease;
+}
+
+.templateItem-preview {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 300px;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.templatePreview-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    opacity: 0;
+    transition: opacity .3s ease;
+}
+
+.templateItem-preview:hover .templatePreview-overlay {
+    opacity: .5;
+}
+
+.templatePreview-buttons {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 50%;
+    opacity: 0;
+    transition: opacity .3s ease;
+}
+
+.templateItem-preview:hover .templatePreview-buttons {
+    opacity: 1;
+}
+
+.templatePreview-buttons>a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 150px;
+    height: 40px;
+    text-align: center;
+    text-decoration: none;
+    transition: all .3s ease;
+    margin: 10px 0;
+}
+
+.templateButtons-createSite {
+    background-color: #ffbf00;
+    border-radius: 30px;
+    color: #282828;
+}
+
+.templateButtons-createSite:hover {
+    background-color: #e5ab00;
+}
+
+.templateButtons-Preview {
+    background-color: #282828;
+    border-radius: 30px;
+    color: #fff;
+}
+
+.templateButtons-Preview:hover {
+    background-color: #fff;
+    color: #282828;
+}
+
+.templateItem-name {
+    color: #282828;
+    text-align: center;
+}

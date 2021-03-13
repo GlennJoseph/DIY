@@ -1,63 +1,132 @@
 var settings;
-if(window.location.pathname.includes('preview-template')){
-    settings = {
-        url: "../php/actions.php",
-        type:"GET",
-        data: JSON.stringify({
-            action: "get_Templates"
-        })
-    };
-}
 
-if(window.location.pathname.includes('sign-up')){
+// GET TEMPLATES
+if(window.location.pathname.includes('preview-template')){
+    // initializing settings
     settings = {
         url: "../php/actions.php",
         type:"POST",
-        data: JSON.stringify({
-            action: "sign_Up",
-            account_name: "glennjosephdl@gmail.com",
-            first_name: "Glenn",
-            last_name: "Deleon",
-            lang: "en",
-            email:"glennjosephdl@gmail.com",
-            template_id: 1000440,
-            permissions: [
-                "STATS_TAB",
-                "EDIT",
-                "DEV_MODE"
-            ],
-            site_data:{
-                external_uid: "GLENNSAMPLE",
-                site_seo: {
-                    og_image: "https://irp-cdn.multiscreensite.com/38e420a5/dms3rep/multi/46090973_1947701631975735_1914562907203436544_n.jpg",
-                    title: "Example Title",
-                    description: "Example description. Should be around 155 characters long, but can be upto 320."
-                }
-            }
-        })
+        data: JSON.stringify({action: 'get_Templates'})
     };
+    // run templates
+    let templates = doAjax(settings);
+        templates.then(resp => {
+            let data = JSON.parse(resp);
+            if(data.status){
+                displayTemplates(data.response);
+            } else {
+                console.error(data.response);
+            }
+        });
 }
 
-let templates = doAjax(settings);
-    console.log(settings.data);
-    templates.then(resp => {
-        let data = JSON.parse(resp);
-        if(data.status){
-            console.log(data.response);
-        } else {
-            console.error(data.response);
-        }
+if(window.location.pathname.includes('sign-up')){
+    displayForm();
+    // upon clicking submit
+    $('.signUpSubmit').click(function(e){
+        e.preventDefault();
+        // initializing settings
+        settings = {
+            url: "../php/actions.php",
+            type:"POST",
+            data: JSON.stringify({
+                action: "sign_Up",
+                account_name: $('.signUpForm').find('.email input').val(),
+                first_name: $('.signUpForm').find('.first_name input').val(),
+                last_name: $('.signUpForm').find('.last_name input').val(),
+                lang: "en",
+                email: $('.signUpForm').find('.email input').val(),
+                template_id: getQuery('template-id'),
+                permissions: [
+                    "STATS_TAB",
+                    "EDIT",
+                    "DEV_MODE"
+                ],
+                site_data:{
+                    external_uid: "GLENNSAMPLE",
+                    site_seo: {
+                        og_image: "https://irp-cdn.multiscreensite.com/38e420a5/dms3rep/multi/46090973_1947701631975735_1914562907203436544_n.jpg",
+                        title: "Example Title",
+                        description: "Example description. Should be around 155 characters long, but can be upto 320."
+                    }
+                }
+            })
+        };
+        // run sign up flow
+        let signUp = doAjax(settings);
+            signUp.then(resp => {
+                let data = JSON.parse(resp);
+                if(data.status){
+                    window.location.href = data.sso_link;
+                } else {
+                    console.error(data.response);
+                    alert(data.response);
+                }
+            })
     });
+}
 
+// DISPLAY TEMPLATES
 function displayTemplates(data){
     $('.gridTemplateView').html('');
     data.map(i => {
         $('.gridTemplateView').append(`
-            <div class="templateItem">
-                <span data-id="${i.template_id}">${i.template_name}</span>
+            <div class="templateItem" data-template-id="${i.template_id}">
+                <div class="templateItem-preview" style="background-image:url('${i.thumbnail_url}')">
+                    <div class="templatePreview-overlay"></div>
+                    <div class="templatePreview-buttons">
+                        <a class="templateButtons-createSite" href="${window.location.origin}/CamelDev/DIY/views/sign-up.html?template-id=${i.template_id}">
+                            <span class="text">Create Site</span>
+                        </a>
+                        <a class="templateButtons-Preview" href="${i.preview_url}" target="_blank">
+                            <span class="text">Preview</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="templateItem-name">${i.template_name}</div>
             </div>
         `);
     })
+}
+
+// DISPLAY FORM
+function displayForm(){
+    $('.signUpView').html(`
+        <div class="signUpForm">
+            <div class="first_name">
+                <label for class="first_name">First Name</label>
+                <input type="text" name="First Name">
+            </div>
+            <div class="last_name">
+                <label for class="last_name">Last Name</label>
+                <input type="text" name="Last Name">
+            </div>
+            <div class="email">
+                <label for class="email">Email</label>
+                <input type="text" name="Email">
+            </div>
+            <input type="button" class="signUpSubmit" value="submit">
+        </div>
+    `);
+}
+
+// GET TEMPLATE ID FROM URL
+function getQuery(param){
+    let url = window.location.href;
+    let getQuery = getParameterByName(param, url);
+
+    return getQuery;
+}
+
+// GET PARAMETER (QUERY FROM URL)
+function getParameterByName(name, url){
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
 /**

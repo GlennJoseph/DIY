@@ -1,6 +1,8 @@
 <?php
-
+// PHPMAILER, DUDA
+require_once('vendor/autoload.php');
 require_once('functions/duda.php');
+require_once('functions/mail.php');
 
 // SANDBOX
 $sandbox_key = 'MGNiMjcxNWE5NzpEaG03dEs=';

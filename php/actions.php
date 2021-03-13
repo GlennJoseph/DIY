@@ -4,8 +4,6 @@ require('init.php');
 
 $payload = @file_get_contents('php://input');
 $data = json_decode($payload);
-print_r($payload);
-print_r('asd');
 
 switch($data->action){
 
@@ -54,9 +52,15 @@ switch($data->action){
 		}
 		$data->reset_password_link = $reset_password_link['response']->reset_url;
 		
-		// // Use json_encode when printing to app.js
-		
-		// print_r(json_encode(["status"=>true,"response"=>$data,"request"=>'Sign Up']));
+		// send mail containing reset password link
+		$test_mail = testMail($data);
+		if(!$test_mail['status']){
+			deleteAccount($data);
+			deleteSite($data);
+			printResponse($test_mail);
+		}
+
+		// print response to be seen on js
 		$data->status = true;
 		$data->request = 'Sign Up';
 		printResponse($data);
