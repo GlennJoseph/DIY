@@ -23,7 +23,7 @@ if(window.location.pathname.includes('preview-template')){
 if(window.location.pathname.includes('sign-up')){
     displayForm();
     // upon clicking submit
-    $('.signUpSubmit').click(function(e){
+    $('.signUpForm-button').click(function(e){
         e.preventDefault();
         // initializing settings
         settings = {
@@ -54,15 +54,33 @@ if(window.location.pathname.includes('sign-up')){
         };
         // run sign up flow
         let signUp = doAjax(settings);
-            signUp.then(resp => {
-                let data = JSON.parse(resp);
-                if(data.status){
-                    window.location.href = data.sso_link;
-                } else {
-                    console.error(data.response);
-                    alert(data.response);
-                }
-            })
+        Swal.fire({
+            title: 'Submitting data...',
+            showConfirmButton: false,
+            didOpen: () => {
+                Swal.showLoading();
+                signUp.then(resp => {
+                    let data = JSON.parse(resp);
+                    if(data.status){
+                        Swal.close();
+                        Swal.fire({
+                            title: 'Success!',
+                            icon: 'success',
+                            text: 'Redirecting..'
+                        });
+                        window.location.href = data.sso_link;
+                    } else {
+                        Swal.close();
+                        Swal.fire({
+                            title: 'Error!',
+                            icon: 'error',
+                            text: data.response
+                        })
+                    }
+                })
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+        });
     });
 }
 
@@ -93,19 +111,21 @@ function displayTemplates(data){
 function displayForm(){
     $('.signUpView').html(`
         <div class="signUpForm">
-            <div class="first_name">
-                <label for class="first_name">First Name</label>
-                <input type="text" name="First Name">
+            <div class="signUpForm-fields">
+                <div class="first_name">
+                    <label for class="first_name">First Name</label>
+                    <input type="text" name="First Name">
+                </div>
+                <div class="last_name">
+                    <label for class="last_name">Last Name</label>
+                    <input type="text" name="Last Name">
+                </div>
+                <div class="email">
+                    <label for class="email">Account Name / Email</label>
+                    <input type="text" name="Email">
+                </div>
             </div>
-            <div class="last_name">
-                <label for class="last_name">Last Name</label>
-                <input type="text" name="Last Name">
-            </div>
-            <div class="email">
-                <label for class="email">Email</label>
-                <input type="text" name="Email">
-            </div>
-            <input type="button" class="signUpSubmit" value="submit">
+            <input type="button" class="signUpForm-button" value="Submit">
         </div>
     `);
 }
