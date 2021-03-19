@@ -5,6 +5,8 @@ require('init.php');
 $payload = @file_get_contents('php://input');
 $data = json_decode($payload);
 
+if (gettype($data) !== 'object') die(json_encode(["status"=>false,"response"=>"Data is not an object"]));
+
 switch($data->action){
 
     case 'get_Templates':
@@ -14,6 +16,9 @@ switch($data->action){
 
 
     case 'sign_Up':
+		if(!isset($data->account_name) || $data->account_name) die(json_encode(["status"=>false, "response"=>"account_name not found"]));
+		if(!isset($data->template_id) || $data->template_id) die(json_encode(["status"=>false, "response"=>"template_id not found"]));
+
 		// CREATE ACCOUNT ----------
 		$account = createAccount($data);
 		if(!$account['status']) printResponse($account);
@@ -67,38 +72,29 @@ switch($data->action){
 
 	break;
 
+	case 'checkout':
+		$new_customer = create_customer($data);
+		$new_charge = create_charge($data);
+		print_r(json_encode($new_charge));
+	break;
+
+	case 'subscribe_Legacy':
+		$customer = create_customer($data);
+		$data->customer = $customer['response']->id;
+		$subscription = create_subscription($data);
+		printResponse($subscription);
+	break;
+
+	case 'subscribe':
+		$session_id = create_checkout_session($data);
+		printResponse($session_id);
+	break;
 
     default:
-		print_r($data);
+		die(json_encode(["status"=>false, "response"=>"Method Not Allowed - ".$data->action."not found."]));
 	break;
 
 }
 
-
-// $action = $data->action;
-
-// switch ($action) {
-//   case 'get_Template':
-//     getTemplates();
-//     break;
-//   case 'walk':
-//     print_r('is walking!');
-//     break;
-//   case 'run':
-//     print_r('is running!');
-//     break;
-//   default:
-//     print_r('not doing anything!');
-// }
-
-// // ASSOC ARRAY
-// $a = (object)['name'=>'Glenn'];
-// print_r($a->name);
-
-// // STRING OBJECT or JSON STRING
-// $b = "{'name':'Trek'}"; 
-
-
-// //print_r(getTemplates());
 
 ?>

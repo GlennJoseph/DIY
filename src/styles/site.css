@@ -153,3 +153,111 @@
 .swal2-container {
     font-family: Poppins;
 }
+
+/* CHECKOUT */
+.checkoutView * {
+    box-sizing: border-box;
+}
+
+.checkoutView {
+    font-family: Poppins;
+    width: 620px;
+    height: auto;
+    margin: auto;
+}
+
+.checkout-interval {
+    display: flex;
+    justify-content: center;
+    width: auto;
+    margin-bottom: 20px;
+}
+
+.checkout-internal-button {
+    padding: 5px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    color: #282828;
+    transition: all .15s ease;
+}
+
+.checkout-internal-button.active {
+    background-color: #ffbf00;
+}
+
+.checkout-internal-button:not(.active){
+    background-color: #fff;
+}
+
+.checkout-fields {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.checkout-first_name, .checkout-last_name, .checkout-email, .checkout-coupon_code {
+    width: 49%;
+    margin-bottom: 15px;
+    color: #383838;
+}
+
+.checkout-fields>div>label {
+    display: block;
+}
+
+.checkout-fields>div>input {
+    display: block;
+    width: 100%;
+    border: none;
+    font-family: Poppins;
+    box-shadow: 0px 0px 2px 0px rgb(24 24 24 / 25%);
+}
+
+.checkout-credit_card {
+    width: 100%;
+    margin-bottom: 15px;
+    color: #383838;
+}
+
+#card-element {
+    padding: 5px;
+    box-shadow: 0px 0px 2px 0px rgb(24 24 24 / 25%);
+}
+
+.checkout-card_error {
+    color: #ff0f0f;
+}
+
+.checkout-recurring, .checkout-one-time {
+    width: 100%;
+}
+
+.checkout-recurring-price, .checkout-one-time-price {
+    display: flex;
+    justify-content: space-between;
+    font-size: 28px;
+    font-weight: 500;
+    width: 60%;
+    margin: auto;
+}
+
+.checkout-subscribe, .checkout-buy {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 180px;
+    height: 60px;
+    text-align: center;
+    text-decoration: none;
+    transition: all .3s ease;
+    margin: 20px auto;
+    cursor: pointer;
+    background-color: #ffbf00;
+    border-radius: 30px;
+    color: #282828;
+}
+
+.checkout-subscribe:hover, .checkout-buy:hover {
+    background-color: #e5ab00;
+}

@@ -84,6 +84,103 @@ if(window.location.pathname.includes('sign-up')){
     });
 }
 
+if(window.location.pathname.includes('legacy')){
+    var stripe = Stripe('pk_test_vfWE7xrduv8Avh6SCr5NOqvn00JMQLksHM');
+    var elements = stripe.elements();
+    // card
+    var cardElement = elements.create('card');
+    cardElement = elements.getElement('card');
+    cardElement.mount('#card-element');
+
+    // CHANGE PRICE VALUE ACCORDING TO INTERVAL
+    let price = '';
+    $('.checkout-internal-button').click(function(){
+        $('.checkout-internal-button.active').removeClass('active');
+        $(this).addClass('active');
+        $('.checkout-price-amount').html($('.checkout-annual-button').hasClass('active') ? '$480.00/year' : '$48.00/month');
+    });
+
+    // RUN WHEN CARD ELEMENT HAS BEEN ENTERED
+    cardElement.on('change', function(event) {
+        if (event.complete) {
+            $('.checkout-card_error').html('');
+            // UPON CLICKING PAYMENT BUTTON
+            $('.checkout-submit_payment').click(function(){
+                // GENERATE A TOKEN/SOURCE
+                stripe.createToken(cardElement).then(function(result) {
+                    settings = {
+                        url: "../php/actions.php",
+                        type:"POST",
+                        data: JSON.stringify({
+                            action: 'subscribe_Legacy',
+                            name: `${$('.checkout-first_name input').val()} ${$('.checkout-last_name input').val()}`,
+                            email: $('.checkout-email input').val(),
+                            coupon_code: $('.checkout-coupon_code input').val(),
+                            source: result.token.id,
+                            price: $('.checkout-annual-button').hasClass('active') ? 'price_1IWMUiHdOsfAiyOE16cYwxsz' : 'price_1IWLCBHdOsfAiyOEmFlklSqw'
+                        })
+                    };
+                    // RUN CHECKOUT
+                    let checkout = doAjax(settings);
+                    checkout.then(resp => {
+                        let data = JSON.parse(resp);
+                        if(data.status){
+                            Swal.fire({
+                                title: 'Payment Successful!',
+                                icon: 'success'
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Payment Successful!',
+                                icon: 'success',
+                                text: data.response
+                            });
+                        }
+                    });
+                });
+            });
+            
+        } else if (event.error) {
+            $('.checkout-card_error').html(event.error.message);
+        }
+    });
+
+}
+
+if (window.location.pathname.includes('checkout')){
+    var stripe = Stripe('pk_test_vfWE7xrduv8Avh6SCr5NOqvn00JMQLksHM');
+
+    // CHANGE PRICE VALUE ACCORDING TO INTERVAL
+    let price = '';
+    $('.checkout-internal-button').click(function(){
+        $('.checkout-internal-button.active').removeClass('active');
+        $(this).addClass('active');
+        $('.checkout-recurring-value').html($('.checkout-annual-button').hasClass('active') ? '$480.00/year' : '$48.00/month');
+    });
+
+    $('.checkout-subscribe').click(function(){
+        settings = {
+            url: "../php/actions.php",
+            type:"POST",
+            data: JSON.stringify({
+                action: 'subscribe'
+            })
+        };
+        // RUN CHECKOUT
+        let checkout = doAjax(settings);
+        checkout.then(resp => {
+            let data = JSON.parse(resp);
+            if(data.status){
+                stripe.redirectToCheckout({
+                    sessionId: data.response.id
+                }).then(data.response);
+            } else {
+                console.error(data.response);
+            }
+        });
+    })
+}
+
 // DISPLAY TEMPLATES
 function displayTemplates(data){
     $('.gridTemplateView').html('');

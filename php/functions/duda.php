@@ -8,7 +8,6 @@ function getTemplates(){
     curl_setopt_array($curl, array(
       CURLOPT_URL => DUDA_ROUTE."/sites/multiscreen/templates",
       CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_ENCODING => "",
       CURLOPT_MAXREDIRS => 10,
       CURLOPT_TIMEOUT => 0,
       CURLOPT_FOLLOWLOCATION => true,
@@ -51,7 +50,6 @@ function createAccount($data){
   curl_setopt_array($curl, array(
       CURLOPT_URL => DUDA_ROUTE.'/accounts/create',
       CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_ENCODING => '',
       CURLOPT_MAXREDIRS => 10,
       CURLOPT_TIMEOUT => 0,
       CURLOPT_FOLLOWLOCATION => true,
@@ -87,7 +85,6 @@ function createAccount($data){
 //   curl_setopt_array($curl, array(
 //     CURLOPT_URL => DUDA_ROUTE.'/accounts/'.$ACCOUNT_NAME,
 //     CURLOPT_RETURNTRANSFER => true,
-//     CURLOPT_ENCODING => '',
 //     CURLOPT_MAXREDIRS => 10,
 //     CURLOPT_TIMEOUT => 0,
 //     CURLOPT_FOLLOWLOCATION => true,
@@ -114,7 +111,6 @@ function deleteAccount($data){
   curl_setopt_array($curl, array(
     CURLOPT_URL => DUDA_ROUTE.'/accounts/'.$data->account_name,
     CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_ENCODING => '',
     CURLOPT_MAXREDIRS => 10,
     CURLOPT_TIMEOUT => 0,
     CURLOPT_FOLLOWLOCATION => true,
@@ -157,7 +153,6 @@ function createSite($data){
   curl_setopt_array($curl, array(
       CURLOPT_URL => DUDA_ROUTE.'/sites/multiscreen/create',
       CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_ENCODING => '',
       CURLOPT_MAXREDIRS => 10,
       CURLOPT_TIMEOUT => 0,
       CURLOPT_FOLLOWLOCATION => true,
@@ -193,7 +188,6 @@ function deleteSite($data){
   curl_setopt_array($curl, array(
     CURLOPT_URL => DUDA_ROUTE.'/sites/multiscreen/'.$data->site_name,
     CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_ENCODING => '',
     CURLOPT_MAXREDIRS => 10,
     CURLOPT_TIMEOUT => 0,
     CURLOPT_FOLLOWLOCATION => true,
@@ -227,7 +221,6 @@ function getSSOLink($data){
     curl_setopt_array($curl, array(
     CURLOPT_URL => DUDA_ROUTE.'/accounts/sso/'.$data->account_name.'/link',
     CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_ENCODING => '',
     CURLOPT_MAXREDIRS => 10,
     CURLOPT_TIMEOUT => 0,
     CURLOPT_FOLLOWLOCATION => true,
@@ -266,7 +259,6 @@ function grantSiteAccess($data){
   curl_setopt_array($curl, array(
       CURLOPT_URL => DUDA_ROUTE.'/accounts/'.$data->account_name.'/sites/'.$data->site_name.'/permissions',
       CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_ENCODING => '',
       CURLOPT_MAXREDIRS => 10,
       CURLOPT_TIMEOUT => 0,
       CURLOPT_FOLLOWLOCATION => true,
@@ -302,7 +294,6 @@ function getResetPasswordLink($data){
   curl_setopt_array($curl, array(
     CURLOPT_URL => DUDA_ROUTE.'/accounts/reset-password/'.$data->account_name,
     CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_ENCODING => '',
     CURLOPT_MAXREDIRS => 10,
     CURLOPT_TIMEOUT => 0,
     CURLOPT_FOLLOWLOCATION => true,
