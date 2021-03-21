@@ -242,22 +242,23 @@
     margin: auto;
 }
 
-.checkout-subscribe, .checkout-buy {
+.checkout-subscribe, .checkout-buy, .return-to-home {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 180px;
     height: 60px;
-    text-align: center;
-    text-decoration: none;
-    transition: all .3s ease;
     margin: 20px auto;
-    cursor: pointer;
     background-color: #ffbf00;
     border-radius: 30px;
     color: #282828;
+    text-align: center;
+    text-decoration: none;
+    font-family: Poppins;
+    transition: all .3s ease;
+    cursor: pointer;
 }
 
-.checkout-subscribe:hover, .checkout-buy:hover {
+.checkout-subscribe:hover, .checkout-buy:hover, .return-to-home:hover {
     background-color: #e5ab00;
 }

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Checkout</title>
+    <script src="https://code.jquery.com/jquery-3.1.0.js"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <link rel="stylesheet" href="../src/styles/test-checkout.css">
+</head>
+<body>
+    <div class="testCheckoutView">
+        <div class="product-group-one-time">
+            <div class="product-group-title">
+                <span class="text">ONE-TIME PRODUCTS</span>
+            </div>
+            <div class="product-items-one-time">
+                <div class="product-item one-time" data-active-price="price_1HUuzUHdOsfAiyOEN3EYxci0">
+                    <div class="product-item-image" style="background-image: url('http://localhost/CamelDev/DIY/src/images/test-checkout-products/blue-cap.png')"></div>
+                    <div class="product-item-details">
+                        <span class="product-details-title">Blue Cap</span>
+                        <span class="product-details-price">$1.00</span>
+                    </div>
+                </div>
+                <div class="product-item one-time" data-active-price="price_1HUuzFHdOsfAiyOEJEPGTMpt">
+                    <div class="product-item-image" style="background-image: url('http://localhost/CamelDev/DIY/src/images/test-checkout-products/green-cap.png')"></div>
+                    <div class="product-item-details">
+                        <span class="product-details-title">Green Cap</span>
+                        <span class="product-details-price">$1.00</span>
+                    </div>
+                </div>
+                <div class="product-item one-time" data-active-price="price_1HUuyyHdOsfAiyOEn7xEi8Ng">
+                    <div class="product-item-image" style="background-image: url('http://localhost/CamelDev/DIY/src/images/test-checkout-products/purple-cap.png')"></div>
+                    <div class="product-item-details">
+                        <span class="product-details-title">Purple Cap</span>
+                        <span class="product-details-price">$1.00</span>
+                    </div>
+                </div>
+            </div>
+            <div class="payment-button one-time">
+                <span class="text">Buy Now</span>
+            </div>
+        </div>
+        <div class="product-group-recurring">
+            <div class="product-group-title">
+                <span class="text">RECURRING PRODUCTS</span>
+            </div>
+            <div class="product-intervals-recurring">
+                <div class="product-interval-button annual active">
+                    <span class="text">ANNUAL</span>
+                </div>
+                <div class="product-interval-button monthly">
+                    <span class="text">MONTHLY</span>
+                </div>
+            </div>
+            <div class="product-items-recurring">
+                <div class="product-item recurring" data-monthly-id="price_1IX1sYHdOsfAiyOEEIIGtfDa" data-annual-id="price_1IX1ssHdOsfAiyOErrPnUtnM">
+                    <div class="product-item-image" style="background-image: url('http://localhost/CamelDev/DIY/src/images/test-checkout-products/blue-cap.png')"></div>
+                    <div class="product-item-details">
+                        <span class="product-details-title">Blue Cap</span>
+                        <span class="product-details-price" data-monthly="$0.55/month" data-annual="$1.00/year">$1.00/year</span>
+                    </div>
+                </div>
+                <div class="product-item recurring" data-monthly-id="price_1IX1t8HdOsfAiyOEYa78acPX" data-annual-id="price_1IX1tOHdOsfAiyOE9ivrYimo">
+                    <div class="product-item-image" style="background-image: url('http://localhost/CamelDev/DIY/src/images/test-checkout-products/green-cap.png')"></div>
+                    <div class="product-item-details">
+                        <span class="product-details-title">Green Cap</span>
+                        <span class="product-details-price" data-monthly="$0.55/month" data-annual="$1.00/year">$1.00/year</span>
+                    </div>
+                </div>
+                <div class="product-item recurring" data-monthly-id="price_1IX1tcHdOsfAiyOEyoy23NOB" data-annual-id="price_1IX1tsHdOsfAiyOEKhN7xpJj">
+                    <div class="product-item-image" style="background-image: url('http://localhost/CamelDev/DIY/src/images/test-checkout-products/purple-cap.png')"></div>
+                    <div class="product-item-details">
+                        <span class="product-details-title">Purple Cap</span>
+                        <span class="product-details-price" data-monthly="$0.55/month" data-annual="$1.00/year">$1.00/year</span>
+                    </div>
+                </div>
+            </div>
+            <div class="payment-button recurring">
+                <span class="text">Subscribe Now</span>
+            </div>
+        </div>
+    </div>
+    <script src="../src/script/app.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+</body>
+</html>

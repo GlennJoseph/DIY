@@ -1,7 +1,7 @@
 var settings;
 
 // GET TEMPLATES
-if(window.location.pathname.includes('preview-template')){
+if ($('.gridTemplateView').length !== 0){
     // initializing settings
     settings = {
         url: "../php/actions.php",
@@ -20,7 +20,7 @@ if(window.location.pathname.includes('preview-template')){
         });
 }
 
-if(window.location.pathname.includes('sign-up')){
+if ($('.signUpView').length !== 0){
     displayForm();
     // upon clicking submit
     $('.signUpForm-button').click(function(e){
@@ -68,7 +68,13 @@ if(window.location.pathname.includes('sign-up')){
                             icon: 'success',
                             text: 'Redirecting..'
                         });
-                        window.location.href = data.sso_link;
+                        // redirect to the sso link
+                        // window.location.href = data.sso_link;
+
+                        // redirect to the checkout page
+                        setTimeout(function(){
+                            window.location.href = `http://localhost/CamelDev/DIY/views/checkout.html?account_name=${data.account_name}&site_name=${data.site_name}&name=${data.first_name} ${data.last_name}`
+                        }, 2000);
                     } else {
                         Swal.close();
                         Swal.fire({
@@ -82,6 +88,51 @@ if(window.location.pathname.includes('sign-up')){
             allowOutsideClick: () => !Swal.isLoading()
         });
     });
+}
+
+if ($('.checkoutView').length !== 0){
+    var stripe = Stripe('pk_test_vfWE7xrduv8Avh6SCr5NOqvn00JMQLksHM');
+
+    // CHANGE PRICE VALUE ACCORDING TO INTERVAL
+    let price = '';
+    $('.checkout-internal-button').click(function(){
+        $('.checkout-internal-button.active').removeClass('active');
+        $(this).addClass('active');
+        $('.checkout-recurring-value').html($('.checkout-annual-button').hasClass('active') ? '$480.00/year' : '$48.00/month');
+    });
+
+    $('.checkout-subscribe').click(function(){
+        settings = {
+            url: "../php/actions.php",
+            type:"POST",
+            data: JSON.stringify({
+                action: 'subscribe',
+                account_name: getQuery('account_name'),
+                site_name: getQuery('site_name'),
+                name: getQuery('name').replace(/%20/g, ' '),
+                price: $('.checkout-annual-button').hasClass('active') ? 'price_1IWMUiHdOsfAiyOE16cYwxsz' : 'price_1IWLCBHdOsfAiyOEmFlklSqw'
+            })
+        };
+        // RUN CHECKOUT
+        let checkout = doAjax(settings);
+        checkout.then(resp => {
+            let data = JSON.parse(resp);
+            if(data.status){
+                stripe.redirectToCheckout({
+                    sessionId: data.response.id
+                }).then(data.response);
+            } else {
+                console.error(data.response);
+            }
+        });
+    })
+}
+
+if ($('.checkoutSuccessView').length !== 0){
+    Swal.fire({
+        title: 'Payment Successful!',
+        icon: 'success'
+    })
 }
 
 if(window.location.pathname.includes('legacy')){
@@ -147,25 +198,78 @@ if(window.location.pathname.includes('legacy')){
 
 }
 
-if (window.location.pathname.includes('checkout')){
+if ($('.testCheckoutView').length !== 0){
     var stripe = Stripe('pk_test_vfWE7xrduv8Avh6SCr5NOqvn00JMQLksHM');
 
     // CHANGE PRICE VALUE ACCORDING TO INTERVAL
     let price = '';
-    $('.checkout-internal-button').click(function(){
-        $('.checkout-internal-button.active').removeClass('active');
+    $('.product-interval-button').click(function(){
+        $('.product-interval-button.active').removeClass('active');
         $(this).addClass('active');
-        $('.checkout-recurring-value').html($('.checkout-annual-button').hasClass('active') ? '$480.00/year' : '$48.00/month');
+        $('.product-item.recurring .product-details-price').each(function(){
+            let priceText = $('.product-interval-button.active').hasClass('annual') ? $(this).attr('data-annual') : $(this).attr('data-monthly');
+            $(this).html(priceText);
+        });
     });
 
-    $('.checkout-subscribe').click(function(){
+    // SELECT ITEM
+    $('.product-item').click(function(){
+        $(this).toggleClass('selected');
+    });
+
+    // ON CLICK PAYMENT BUTTON
+    $('.payment-button').click(function(){
+        let button = $(this);
+
+        
+        if (button.hasClass('recurring')){
+            // ADD ACTIVE PRICE ATTRIBUTE TO RECURRING ITEMS
+            $('.product-item.selected').each(function(){
+                let recurringActivePrice = $('.product-interval-button.active').hasClass('annual') ? $(this).attr('data-annual-id') : $(this).attr('data-monthly-id');
+                $(this).attr('data-active-price', recurringActivePrice);
+            });
+
+            // IF NONE ARE SELECTED, ALERT
+            if ($('.selected.recurring').length == 0){
+                alert('No items selected!');
+                return 0;
+            }
+        } else {
+            // IF NONE ARE SELECTED, ALERT
+            if ($('.selected.one-time').length == 0){
+                alert('No items selected!');
+                return 0;
+            }
+        }
+
+        // SET PRICE LIST ARRAY
+        let priceList = [];
+        if (button.hasClass('recurring')){
+            $('.product-item.selected.recurring').each(function(){
+                priceList.push({
+                    price: $(this).attr('data-active-price'),
+                    quantity: 1
+                });
+            })
+        } else {
+            $('.product-item.selected.one-time').each(function(){
+                priceList.push({
+                    price: $(this).attr('data-active-price'),
+                    quantity: 1
+                });
+            })
+        }
+
         settings = {
-            url: "../php/actions.php",
+            url: "../php/test.php",
             type:"POST",
             data: JSON.stringify({
-                action: 'subscribe'
+                action: 'create_Session',
+                mode: button.hasClass('recurring') ? 'subscription' : 'payment',
+                line_items: priceList
             })
         };
+
         // RUN CHECKOUT
         let checkout = doAjax(settings);
         checkout.then(resp => {
@@ -178,7 +282,8 @@ if (window.location.pathname.includes('checkout')){
                 console.error(data.response);
             }
         });
-    })
+
+    });
 }
 
 // DISPLAY TEMPLATES

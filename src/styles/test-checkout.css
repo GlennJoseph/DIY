@@ -1,0 +1,112 @@
+.testCheckoutView {
+    width: 1020px;
+    margin: auto;
+    font-family: Poppins;
+}
+
+.product-group-one-time, .product-group-recurring {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 20px 0;
+}
+
+.product-items-one-time, .product-items-recurring {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.product-group-title {
+    font-size: 25px;
+    font-weight: 600;
+    margin: 10px 0;
+}
+
+.product-item {
+    display: flex;
+    flex-direction: column;
+    width: 28%;
+    padding: 1%;
+    margin: 1%;
+    border: 2px solid rgba(255, 255, 255, 0);
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all .35s ease;
+}
+
+.product-item:hover {
+    border-color: #ffbf00;
+}
+
+.product-item.selected {
+    box-shadow: 0px 0px 8px 0px rgb(40 40 40);
+    background-color: #ffbf00;
+}
+
+.product-item-image {
+    width: 100%;
+    height: 200px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.product-item-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.product-details-title {
+    font-size: 22px;
+    font-weight: 500;
+}
+
+.payment-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    height: 60px;
+    background-color: #ffbf00;
+    border-radius: 30px;
+    color: #282828;
+    font-weight: 500;
+    text-align: center;
+    text-decoration: none;
+    transition: all .3s ease;
+    margin: 10px 0;
+    cursor: pointer;
+}
+
+.payment-button:hover {
+    background-color: #e5ab00;
+}
+
+.product-intervals-recurring {
+    display: flex;
+    justify-content: center;
+    width: 30%;
+    padding: 5px;
+    margin: auto;
+    background-color: #282828;
+    color: #fff;
+    border-radius: 30px;
+}
+
+.product-interval-button {
+    display: block;
+    padding: 10px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+}
+
+.product-interval-button.active {
+    background-color: #ffbf00;
+    color: #282828;
+}

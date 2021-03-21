@@ -16,8 +16,8 @@ switch($data->action){
 
 
     case 'sign_Up':
-		if(!isset($data->account_name) || $data->account_name) die(json_encode(["status"=>false, "response"=>"account_name not found"]));
-		if(!isset($data->template_id) || $data->template_id) die(json_encode(["status"=>false, "response"=>"template_id not found"]));
+		if(!isset($data->account_name) || $data->account_name == '') die(json_encode(["status"=>false, "response"=>"account_name not found"]));
+		if(!isset($data->template_id) || $data->template_id == '') die(json_encode(["status"=>false, "response"=>"template_id not found"]));
 
 		// CREATE ACCOUNT ----------
 		$account = createAccount($data);
