@@ -73,7 +73,7 @@ if ($('.signUpView').length !== 0){
 
                         // redirect to the checkout page
                         setTimeout(function(){
-                            window.location.href = `http://localhost/CamelDev/DIY/views/checkout.html?account_name=${data.account_name}&site_name=${data.site_name}&name=${data.first_name} ${data.last_name}`
+                            window.location.href = `/CamelDev/DIY/views/checkout.html?account_name=${data.account_name}&site_name=${data.site_name}&name=${data.first_name} ${data.last_name}`
                         }, 2000);
                     } else {
                         Swal.close();
@@ -110,6 +110,8 @@ if ($('.checkoutView').length !== 0){
                 account_name: getQuery('account_name'),
                 site_name: getQuery('site_name'),
                 name: getQuery('name').replace(/%20/g, ' '),
+                success_url: `${window.location.origin}/CamelDev/DIY/views/checkout-success.html`,
+                cancel_url: `${window.location.origin}/CamelDev/DIY/views/checkout.html`,
                 price: $('.checkout-annual-button').hasClass('active') ? 'price_1IWMUiHdOsfAiyOE16cYwxsz' : 'price_1IWLCBHdOsfAiyOEmFlklSqw'
             })
         };
@@ -129,13 +131,65 @@ if ($('.checkoutView').length !== 0){
 }
 
 if ($('.checkoutSuccessView').length !== 0){
-    Swal.fire({
-        title: 'Payment Successful!',
-        icon: 'success'
+    // SHOW SUCCESS POPUP
+    // Swal.fire({
+    //     title: 'Site Published!',
+    //     icon: 'success'
+    // })
+
+    settings = {
+        url: "../php/webhook-stripe.php",
+        type:"GET"
+    };
+
+    // RUN AJAX
+    let webhook = doAjax(settings);
+    webhook.then(resp => {
+        let data = JSON.parse(resp);
+        if(data.status){
+            console.log(data.response);
+        } else {
+            console.error(data.response);
+        }
+    });
+
+    $('.customer-portal').click(function(){
+        settings = {
+            url: "../php/actions.php",
+            type:"POST",
+            data: JSON.stringify({
+                action: 'billing_Portal',
+                customer: getQuery('customer'),
+                return_url: `${window.location.origin}/CamelDev/DIY/views/checkout-success.html`
+            })
+        };
+
+        // RUN AJAX
+        let billingPortal = doAjax(settings);
+        billingPortal.then(resp => {
+            let data = JSON.parse(resp);
+            if(data.status){
+                window.location.href = data.response.url;
+            } else {
+                console.error(data.response);
+            }
+        });
     })
 }
 
-if(window.location.pathname.includes('legacy')){
+// if ($('.customerPortalView').length !== 0){
+//     settings = {
+//         url: "../php/actions.php",
+//         type:"POST",
+//         data: JSON.stringify({
+//             action: 'billing_Portal',
+//             customer: '',
+//             return_url: `${window.location.origin}/CamelDev/DIY/views/preview-template.html`
+//         })
+//     };
+// }
+
+if ($('.legacyCheckoutView').length !== 0){
     var stripe = Stripe('pk_test_vfWE7xrduv8Avh6SCr5NOqvn00JMQLksHM');
     var elements = stripe.elements();
     // card
@@ -182,8 +236,8 @@ if(window.location.pathname.includes('legacy')){
                             });
                         } else {
                             Swal.fire({
-                                title: 'Payment Successful!',
-                                icon: 'success',
+                                title: 'Payment Unsuccessful!',
+                                icon: 'error',
                                 text: data.response
                             });
                         }

@@ -72,22 +72,44 @@ switch($data->action){
 
 	break;
 
-	case 'checkout':
-		$new_customer = create_customer($data);
-		$new_charge = create_charge($data);
-		print_r(json_encode($new_charge));
-	break;
+	// case 'checkout':
+	// 	$new_customer = create_customer($data);
+	// 	$new_charge = create_charge($data);
+	// 	print_r(json_encode($new_charge));
+	// break;
 
-	case 'subscribe_Legacy':
-		$customer = create_customer($data);
-		$data->customer = $customer['response']->id;
-		$subscription = create_subscription($data);
-		printResponse($subscription);
-	break;
+	// case 'subscribe_Legacy':
+	// 	$customer = create_customer($data);
+	// 	$data->customer = $customer['response']->id;
+	// 	$subscription = create_subscription($data);
+	// 	printResponse($subscription);
+	// break;
 
 	case 'subscribe':
+		$customer = create_customer($data); // create customer to get customer id
+		if(!$customer['status']){
+			printResponse($customer);
+		}
+		$data->customer = $customer['response']->id;
+		
 		$session_id = create_checkout_session($data);
+		if(!$session_id['status']){
+			printResponse($session_id);
+		}
+
+		$data->status = true;
+		$data->request = 'Subscribe';
 		printResponse($session_id);
+	break;
+
+	case 'billing_Portal':
+		$portal_session = billing_portal($data);
+		printResponse($portal_session);
+	break;
+
+	case 'cancel_Subscription':
+		$subscription = cancel_subscription($data);
+		printResponse($subscription);
 	break;
 
     default:

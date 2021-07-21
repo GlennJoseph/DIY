@@ -27,8 +27,9 @@ function create_checkout_session($data){
         $stripe = new \Stripe\StripeClient(STRIPE_API_SK);
 
         $checkout_session = $stripe->checkout->sessions->create([
-            'success_url' => 'http://localhost/CamelDev/DIY/views/checkout-success.html',
-            'cancel_url' => 'http://localhost/CamelDev/DIY/views/checkout.html',
+            'customer' => $data->customer,
+            'success_url' => $data->success_url.'?session_id={CHECKOUT_SESSION_ID}&customer='.$data->customer,
+            'cancel_url' => $data->cancel_url,
             'payment_method_types' => ['card'],
             'mode' => 'subscription',
             'line_items' => [
@@ -38,9 +39,25 @@ function create_checkout_session($data){
                     'quantity' => 1,
                 ]
             ],
-            'subscription_data' => ['metadata' => ['name'=>$data->name, 'email'=>$data->account_name, 'site_name'=>$data->site_name, 'account_name'=>$data->account_name]]
+            'allow_promotion_codes' => true
+            // 'metadata' => ['name'=>$data->name, 'email'=>$data->account_name, 'site_name'=>$data->site_name, 'account_name'=>$data->account_name]
+            // 'subscription_data' => ['metadata' => ['name'=>$data->name, 'email'=>$data->account_name, 'site_name'=>$data->site_name, 'account_name'=>$data->account_name]]
     ]);
         return ["status"=>true,"response"=>$checkout_session,"request"=>__FUNCTION__];
+    } catch(Exception $e){
+        return ["status"=>false,"response"=>$e->getMessage(),"request"=>__FUNCTION__];
+    }
+}
+
+// RETRIEVE CHECKOUT SESSION OBJECT
+function retrieve_session($data){
+    try{
+        $stripe = new \Stripe\StripeClient(STRIPE_API_SK);
+
+        $session = $stripe->checkout->sessions->retrieve(
+            $data->session_id
+        );
+        return ["status"=>true,"response"=>$session,"request"=>__FUNCTION__];
     } catch(Exception $e){
         return ["status"=>false,"response"=>$e->getMessage(),"request"=>__FUNCTION__];
     }
@@ -53,10 +70,9 @@ function create_customer($data){
         
         $customer = $stripe->customers->create([
             'description' => 'DIY Customer',
-            'source' => $data->source,
-            'email' => $data->email,
+            'email' => $data->account_name,
             'name' => $data->name,
-            'metadata' => ['name'=>$data->name, 'email'=>$data->email]
+            'id' => $data->site_name
         ]);
 
         return ["status"=>true,"response"=>$customer,"request"=>__FUNCTION__];
@@ -101,5 +117,60 @@ function create_subscription($data){
     }
 }
 
+
+// RETRIEVE A SUBSCRIPTION
+function retrieve_subscription($subscription_id){
+    try{
+        $stripe = new \Stripe\StripeClient(STRIPE_API_SK);
+        $subscription = $stripe->subscriptions->retrieve(
+            $subscription_id
+        );
+        return ["status"=>true,"response"=>$subscription,"request"=>__FUNCTION__];
+    } catch(Exception $e){
+        return ["status"=>false,"response"=>$e->getMessage(),"request"=>__FUNCTION__];
+    }
+}
+
+// UPDATE A SUBSCRIPTION
+function update_subscription($data){
+    try{
+        $stripe = new \Stripe\StripeClient(STRIPE_API_SK);
+        $subscription = $stripe->subscriptions->update(
+            $data->subscription,
+            ['metadata' => ['name'=>$data->metadata->name, 'email'=>$data->metadata->account_name, 'site_name'=>$data->metadata->site_name, 'account_name'=>$data->metadata->account_name]]
+        );
+        return ["status"=>true,"response"=>$subscription,"request"=>__FUNCTION__];
+    } catch(Exception $e){
+        return ["status"=>false,"response"=>$e->getMessage(),"request"=>__FUNCTION__];
+    }
+}
+
+// CANCEL A SUBSCRIPTION
+function cancel_subscription($subscription_id){
+    try{
+        $stripe = new \Stripe\StripeClient(STRIPE_API_SK);
+        $subscription = $stripe->subscriptions->cancel(
+            $subscription_id
+        );
+        return ["status"=>true,"response"=>$subscription,"request"=>__FUNCTION__];
+    } catch(Exception $e){
+        return ["status"=>false,"response"=>$e->getMessage(),"request"=>__FUNCTION__];
+    }
+}
+
+
+// CANCEL A SUBSCRIPTION
+function billing_portal($data){
+    try{
+        $stripe = new \Stripe\StripeClient(STRIPE_API_SK);
+        $session = $stripe->billingPortal->sessions->create([
+            'customer' => $data->customer,
+            'return_url' => $data->return_url
+        ]);
+        return ["status"=>true,"response"=>$session,"request"=>__FUNCTION__];
+    } catch(Exception $e){
+        return ["status"=>false,"response"=>$e->getMessage(),"request"=>__FUNCTION__];
+    }
+}
 
 ?>

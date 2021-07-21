@@ -155,11 +155,11 @@
 }
 
 /* CHECKOUT */
-.checkoutView * {
+.checkoutView *, .legacyCheckoutView * {
     box-sizing: border-box;
 }
 
-.checkoutView {
+.checkoutView, .legacyCheckoutView {
     font-family: Poppins;
     width: 620px;
     height: auto;
@@ -233,7 +233,7 @@
     width: 100%;
 }
 
-.checkout-recurring-price, .checkout-one-time-price {
+.checkout-recurring-price, .checkout-one-time-price, .checkout-price {
     display: flex;
     justify-content: space-between;
     font-size: 28px;
@@ -242,7 +242,7 @@
     margin: auto;
 }
 
-.checkout-subscribe, .checkout-buy, .return-to-home {
+.checkout-subscribe, .checkout-buy, .return-to-home, .checkout-submit_payment, .customer-portal {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -259,6 +259,15 @@
     cursor: pointer;
 }
 
-.checkout-subscribe:hover, .checkout-buy:hover, .return-to-home:hover {
+.checkout-subscribe:hover, .checkout-buy:hover, .return-to-home:hover, .checkout-submit_payment:hover, .customer-portal:hover {
     background-color: #e5ab00;
+}
+
+.checkoutSuccessView {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 500px;
+    margin: auto;
 }

@@ -250,14 +250,14 @@ function getSSOLink($data){
 function grantSiteAccess($data){
 
     // add predefined permissions
-  $body_params = ['permissions'=>['STATS','EDIT','DEV_MODE']];
+  $body_params = ['permissions'=>['STATS_TAB','EDIT','DEV_MODE']];
 
   if (isset($data->permissions)) $body_params['permissions'] = $data->permissions;
 
   $curl = curl_init();
 
   curl_setopt_array($curl, array(
-      CURLOPT_URL => DUDA_ROUTE.'/accounts/'.$data->account_name.'/sites/'.$data->site_name.'/permissions',
+      CURLOPT_URL => DUDA_ROUTE.'/accounts/'.(isset($data->account_name) ? $data->account_name : $data->email).'/sites/'.(isset($data->site_name) ? $data->site_name : $data->customer).'/permissions',
       CURLOPT_RETURNTRANSFER => true,
       CURLOPT_MAXREDIRS => 10,
       CURLOPT_TIMEOUT => 0,
@@ -269,6 +269,40 @@ function grantSiteAccess($data){
         'Authorization: Basic '.DUDA_API_KEY,
         'Content-Type: application/json'
       ),
+  ));
+
+  $resp = curl_exec($curl);
+  $responseCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+  curl_close($curl);
+  
+  $response = json_decode($resp);
+
+  if($responseCode == 200 || $responseCode == 204){
+      return ["status"=>true,"response"=>$response,"request"=>__FUNCTION__];
+  }else{
+      return ["status"=>false,"response"=>$response->message,"request"=>__FUNCTION__];
+  }
+
+}
+
+// DELETE - REMOVE SITE ACCESS
+function removeSiteAccess($data){
+
+  $curl = curl_init();
+
+  curl_setopt_array($curl, array(
+    CURLOPT_URL => DUDA_ROUTE.'/accounts/'.$data->customer_email.'/sites/'.$data->customer.'/permissions',
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_MAXREDIRS => 10,
+    CURLOPT_TIMEOUT => 0,
+    CURLOPT_FOLLOWLOCATION => true,
+    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+    CURLOPT_CUSTOMREQUEST => 'DELETE',
+    CURLOPT_HTTPHEADER => array(
+      'Authorization: Basic '.DUDA_API_KEY,
+      'Content-Type: application/json'
+    ),
   ));
 
   $resp = curl_exec($curl);
@@ -312,6 +346,76 @@ function getResetPasswordLink($data){
   
   $response = json_decode($resp);
 
+  if($responseCode == 200 || $responseCode == 204){
+      return ["status"=>true,"response"=>$response,"request"=>__FUNCTION__];
+  }else{
+      return ["status"=>false,"response"=>$response->message,"request"=>__FUNCTION__];
+  }
+}
+
+
+// PUBLISH SITE
+function publishSite($data){
+
+  $curl = curl_init();
+
+  curl_setopt_array($curl, array(
+    CURLOPT_URL => DUDA_ROUTE.'/sites/multiscreen/publish/'.$data->customer,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_ENCODING => '',
+    CURLOPT_MAXREDIRS => 10,
+    CURLOPT_TIMEOUT => 0,
+    CURLOPT_FOLLOWLOCATION => true,
+    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+    CURLOPT_CUSTOMREQUEST => 'POST',
+    CURLOPT_HTTPHEADER => array(
+      'Authorization: Basic '.DUDA_API_KEY,
+      'Content-Type: application/json'
+    ),
+  ));
+
+  $resp = curl_exec($curl);
+  $responseCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+  curl_close($curl);
+  
+  $response = json_decode($resp);
+
+  if($responseCode == 200 || $responseCode == 204){
+      return ["status"=>true,"response"=>$response,"request"=>__FUNCTION__];
+  }else{
+      return ["status"=>false,"response"=>$response->message,"request"=>__FUNCTION__];
+  }
+}
+
+// PUBLISH SITE
+function unpublishSite($data){
+
+  $curl = curl_init();
+
+  curl_setopt_array($curl, array(
+    CURLOPT_URL => DUDA_ROUTE.'/sites/multiscreen/unpublish/'.$data->customer,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_ENCODING => '',
+    CURLOPT_MAXREDIRS => 10,
+    CURLOPT_TIMEOUT => 0,
+    CURLOPT_FOLLOWLOCATION => true,
+    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+    CURLOPT_CUSTOMREQUEST => 'POST',
+    CURLOPT_HTTPHEADER => array(
+      'Authorization: Basic '.DUDA_API_KEY,
+      'Content-Type: application/json'
+    ),
+  ));
+
+  $resp = curl_exec($curl);
+  $responseCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+  curl_close($curl);
+  
+  $response = json_decode($resp);
+
+  return ["status"=>true,"response"=>$response,"request"=>__FUNCTION__];
   if($responseCode == 200 || $responseCode == 204){
       return ["status"=>true,"response"=>$response,"request"=>__FUNCTION__];
   }else{
